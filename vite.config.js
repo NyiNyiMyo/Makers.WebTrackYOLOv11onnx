@@ -12,5 +12,5 @@ export default defineConfig({
     exclude: ['onnxruntime-web']
   },
   assetsInclude: ["**/*.onnx"],
-  base: "/YOLO-ByteTrack-ONNX-Web/"
+  base: "/"
 })
