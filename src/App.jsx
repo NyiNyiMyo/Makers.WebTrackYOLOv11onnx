@@ -368,8 +368,8 @@ const updateImgszTypeLock = (modelValue = null) => {
   } else {
     selectEl.disabled = false;
     // Reset value when unlocked to avoid stuck at zeroPad
-    if (selectEl.value === "zeroPad") {
-      selectEl.value = "dynamic";
+    if (selectEl.value === "dynamic") {
+      selectEl.value = "zeroPad";
     }
   }
 };
@@ -400,6 +400,26 @@ const updateImgszTypeLock = (modelValue = null) => {
     }, 0);
     loadModel();
     getCameras();
+
+  async function forceCameraPromptOnLoad() {
+    try {
+      // 1. Force a blank generic camera request immediately on page load
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      
+      // 2. If it succeeds, stop the stream immediately (we just wanted the permission)
+      stream.getTracks().forEach(track => track.stop());
+      
+      // 3. NOW that permission is granted, your dropdown menu can successfully 
+      //    find your real camera devices, fill the list, and start your tracking!
+      if (typeof refreshCameraList === "function") {
+        refreshCameraList(); 
+      }
+    } catch (err) {
+      console.error("User denied camera access or no camera found on load:", err);
+    }
+  }
+
+  forceCameraPromptOnLoad();
 
     // videoWorkerRef.current = new Worker(
     //   new URL("./utils/video_process_worker.js", import.meta.url),
@@ -600,6 +620,8 @@ const updateImgszTypeLock = (modelValue = null) => {
       updateImgszTypeLock(modelSelectorRef.current?.value);
     }, 5);
   }, []);
+
+
 
   const handle_ToggleCamera = useCallback(async () => {
     if (cameraRef.current.srcObject) {
