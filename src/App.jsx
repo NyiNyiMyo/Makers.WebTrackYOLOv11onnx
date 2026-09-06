@@ -366,11 +366,15 @@ const updateImgszTypeLock = (modelValue = null) => {
     }
     selectEl.disabled = true;
   } else {
-    selectEl.disabled = false;
-    // Reset value when unlocked to avoid stuck at zeroPad
-    if (selectEl.value === "zeroPad") {
-      selectEl.value = "dynamic";
+    // selectEl.disabled = false;
+    // // Reset value when unlocked to avoid stuck at zeroPad
+    // if (selectEl.value === "zeroPad") {
+    //   selectEl.value = "dynamic";
+    // }
+    if (selectEl.value !== "zeroPad") {
+      selectEl.value = "zeroPad";
     }
+    selectEl.disabled = true;
   }
 };
 
