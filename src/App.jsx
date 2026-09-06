@@ -612,24 +612,29 @@ const updateImgszTypeLock = (modelValue = null) => {
       setDetails([]);
       setActiveFeature(null);
       setTimeout(() => {
-      updateImgszTypeLock(modelSelectorRef.current?.value);
-    }, 5);
-    } else if (cameraSelectorRef.current && cameraSelectorRef.current.value) {
-      try {
-        // open camera
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            deviceId: cameraSelectorRef.current.value,
-          },
-          audio: false,
-        });
-        cameraRef.current.srcObject = stream;
-        setActiveFeature("camera");
-      } catch (err) {
-        console.error("Error accessing camera:", err);
+        updateImgszTypeLock(modelSelectorRef.current?.value);
+      }, 5);
+      } else if (cameraSelectorRef.current && cameraSelectorRef.current.value) {
+        try {
+          // 1. Check if the deviceId is valid. If it's empty or placeholder, request generic video.
+          const selectedDeviceId = cameraSelectorRef.current.value;
+          const videoConstraints = (selectedDeviceId && selectedDeviceId !== "") 
+            ? { deviceId: { exact: selectedDeviceId } } 
+            : true; // Bypasses the ID lock to force the OS permission prompt!
+      
+          // 2. Open camera
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: videoConstraints,
+            audio: false,
+          });
+          
+          cameraRef.current.srcObject = stream;
+          setActiveFeature("camera");
+        } catch (err) {
+          console.error("Error accessing camera:", err);
+        }
       }
-    }
-  }, []);
+      }, []);
 
   const handle_cameraLoad = useCallback(() => {
     overlayRef.current.width = cameraRef.current.clientWidth;
