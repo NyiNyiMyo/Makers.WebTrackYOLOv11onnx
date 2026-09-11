@@ -466,7 +466,7 @@ const updateImgszTypeLock = (modelValue = null) => {
 
     const model_path = customModel
       ? customModel.url
-      : `${window.location.href}/models/${selectedModel}.onnx`;
+      : `${window.location.origin}/models/${selectedModel}.onnx`; // .href to .origin
 
     modelConfigRef.current = { model_path, backend };
 
